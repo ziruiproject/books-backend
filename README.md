@@ -1,6 +1,3 @@
----
-
-```md
 # 📚 Book Catalog API
 
 Selamat datang di Book Catalog API! 🚀  
