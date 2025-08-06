@@ -91,8 +91,8 @@ JWT_SECRET=my_super_secret_key
 ### 1️⃣ Clone dan masuk ke direktori project
 
 ```bash
-git clone https://github.com/kamu/projectmu.git
-cd projectmu
+git clone https://github.com/ziruiproject/books-backend.git
+cd books-backend
 ```
 
 ### 2️⃣ Install dependency Go
