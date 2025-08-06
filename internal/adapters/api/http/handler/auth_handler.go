@@ -34,7 +34,7 @@ func (handler *AuthHandler) Login(ctx *fiber.Ctx) error {
 
 	response, err := handler.AuthUsecase.Login(ctx.UserContext(), *request)
 	if errors.As(err, &validationError) {
-		log.Error().Err(err).Msg("failed to create user")
+		log.Error().Err(err).Msg("failed to login")
 		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(
 			http.ValidationResponse(validationError),
 		)
@@ -42,12 +42,12 @@ func (handler *AuthHandler) Login(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		log.Error().Err(err).Msg("failed to login")
-		return ctx.Status(fiber.StatusInternalServerError).JSON(
+		return ctx.Status(fiber.StatusUnauthorized).JSON(
 			http.ErrorResponse("Invalid email or password"),
 		)
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(
+	return ctx.Status(fiber.StatusOK).JSON(
 		http.SuccessResponse(response, "Login successful"),
 	)
 }
@@ -114,7 +114,7 @@ func (handler *AuthHandler) Current(ctx *fiber.Ctx) error {
 		)
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(
+	return ctx.Status(fiber.StatusOK).JSON(
 		http.SuccessResponse(response, "User fetched successfully"),
 	)
 }

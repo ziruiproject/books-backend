@@ -2,6 +2,8 @@ package helper
 
 import (
 	"reflect"
+	"strconv"
+	"strings"
 )
 
 func Differ(oldObj, newObj interface{}) interface{} {
@@ -59,4 +61,18 @@ func isZeroValue(val interface{}) bool {
 	}
 
 	return reflect.DeepEqual(val, reflect.Zero(v.Type()).Interface())
+}
+
+func ParseUintSlice(s string) []uint {
+	var result []uint
+	for _, part := range strings.Split(s, ",") {
+		part = strings.TrimSpace(part)
+		if part == "" {
+			continue
+		}
+		if n, err := strconv.ParseUint(part, 10, 32); err == nil {
+			result = append(result, uint(n))
+		}
+	}
+	return result
 }

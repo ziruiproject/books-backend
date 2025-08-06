@@ -6,6 +6,10 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"starter/config"
+	"starter/internal/core/author"
+	"starter/internal/core/book"
+	"starter/internal/core/category"
+	"starter/internal/core/publisher"
 	"starter/internal/core/role"
 	"starter/internal/core/user"
 )
@@ -30,7 +34,7 @@ func NewPostgresConn() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = db.AutoMigrate(&user.User{}, &role.Role{})
+	err = db.AutoMigrate(&user.User{}, &role.Role{}, &publisher.Publisher{}, &author.Author{}, &category.Category{}, &book.Book{})
 	if err != nil {
 		log.Panic().
 			Err(err).

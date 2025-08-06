@@ -1,126 +1,226 @@
+---
 
-# Starter Project GO — Hexagonal Architecture (Ports & Adapters)
+```md
+# 📚 Book Catalog API
 
-Starter adalah template atau boilerplate project Golang yang menggunakan pendekatan **Hexagonal Architecture** (Ports & Adapters).
+Selamat datang di Book Catalog API! 🚀  
+Project ini adalah backend service untuk mengelola **katalog buku digital** lengkap dengan fitur-fitur modern seperti:
 
-## 🚀 Fitur Utama
+- 🔐 Autentikasi JWT
+- 📦 Upload file ke S3 (via MinIO)
+- 🗃️ CRUD Buku, Penulis, Kategori, Penerbit, Pengguna
+- 🧠 Validasi, Filter, Pagination
+- 🐳 Docker + Seeder Otomatis
+- 🧱 Dibangun dengan **Hexagonal Architecture**
 
-- ✨ Arsitektur Hexagonal (clean, scalable)
-- 🌐 HTTP dan ~~gRPC~~ endpoint (Fiber + gRPC ready)
-- 🔐 Auth dengan JWT
-- 🧩 Middleware (auth, logging)
-- 🧪 Validasi input
-- 🗃️ PostgreSQL ready
-- 🧰 Modular dan ~~testable~~
+> Dibangun dari template starter milikku sendiri:  
+> 👉 [**starter-go**](https://github.com/ziruiproject/starter-go)
 
 ---
 
-## 📁 Struktur Project
+## 🧠 Tech Stack
+
+| Layer        | Tools/Libs                 |
+|--------------|----------------------------|
+| Language     | Go 🧬                      |
+| HTTP Server  | Fiber ⚡                    |
+| Auth         | JWT 🔐                     |
+| Database     | PostgreSQL 🐘              |
+| Storage      | MinIO (S3 compatible) ☁️   |
+| ORM          | Gorm ⚙️                    |
+| Arch Design  | Hexagonal Architecture 🛠️ |
+| Container    | Docker + Docker Compose 🐳 |
+
+---
+
+## 🧾 Struktur Project (Hexagonal Style)
 
 ```
-.
-├── cmd/                # Entry point aplikasi (bootstrap & main)
-│   └── app/
-├── config/             # Loader konfigurasi dari env
-├── internal/           # Core + Adapter
-│   ├── adapters/       # Adapter input/output (http, grpc, db, jwt, validator, dll)
-│   └── core/           # Domain + usecase (business logic)
-├── pkg/                # Helper dan library kecil
-├── docker-compose.yaml
-├── go.mod / go.sum
-└── README.md
+
+📦 project-root
+├── cmd/                  # Entry point
+├── config/               # Konfigurasi & .env
+├── internal/
+│   ├── adapters/         # Infrastruktur (handler, repo, middleware, etc.)
+│   └── core/             # Domain (entity, usecase, dto, interface)
+├── pkg/                  # Utilitas (hasher, helper)
+├── Makefile              # Shortcut command
+├── docker-compose.yaml   # Container orchestration
+└── README.md             # You're here 😎
+
 ````
 
 ---
 
-## 📦 Dependencies
+## ⚙️ Konfigurasi `.env`
 
-- [Fiber](https://github.com/gofiber/fiber) — HTTP framework
-- [gorm](https://gorm.io/gorm) — Database driver
-- [zerolog](https://github.com/rs/zerolog) — Structured logger
-- [jwt-go](https://github.com/golang-jwt/jwt) — JWT auth
-- [go-playground/validator](https://github.com/go-playground/validator) — Input validation
-
----
-
-## ⚙️ Menjalankan Project
-
-### 1. Clone dan install dependencies
-
-```bash
-git clone https://github.com/ziruiproject/starter-go.git
-cd starter-go
-go mod tidy
-````
-
-### 2. Copy & edit konfigurasi
+Salin file contoh:
 
 ```bash
 cp config/example.env .env
-```
+````
 
-Isi variabel `.env`:
+Isi dengan konfigurasi seperti berikut:
 
 ```env
 APP_URL=http://localhost
-APP_PORT=8080
+APP_PORT=8000
 TIMEZONE=Asia/Jakarta
 
+# PostgreSQL
 POSTGRES_DB=postgres
 POSTGRES_PORT=5432
 POSTGRES_USER=postgres
 POSTGRES_HOST=localhost
 POSTGRES_PASSWORD=password123
 
+# MinIO (S3-compatible)
+MINIO_ROOT_USER=minioadmin
+MINIO_ROOT_PASSWORD=minioadmin
+MINIO_PORT_API=9000
+MINIO_PORT_UI=9001
+MINIO_BUCKET=bucket
+MINIO_HOST=localhost
+MINIO_REGION=us-west-2
+
+# JWT Secret
 JWT_SECRET=my_super_secret_key
-
 ```
 
-### 3. Jalankan PostgreSQL
+---
 
-Jika ingin memakai Docker:
+## 🚀 Cara Menjalankan (Dev Mode)
+
+### 1️⃣ Clone dan masuk ke direktori project
 
 ```bash
-docker-compose up -d
+git clone https://github.com/kamu/projectmu.git
+cd projectmu
 ```
 
-### 4. Jalankan aplikasi
+### 2️⃣ Install dependency Go
 
 ```bash
-go run cmd/app/main.go cmd/app/bootstrap.go
+go mod tidy
 ```
 
-[//]: # (---)
+### 3️⃣ Jalankan semua service + seeder otomatis
 
-[//]: # ()
-[//]: # (## 🧪 Menjalankan Testing)
+```bash
+make up-and-seed
+```
 
-[//]: # ()
-[//]: # (```bash)
+➡️ Ini akan:
 
-[//]: # (go test ./...)
+* 🐳 Menjalankan PostgreSQL & MinIO
+* 🏗️ Build dan jalankan service Go
+* 🌱 Jalankan migrasi & seeder
 
-[//]: # (```)
+### 4️⃣ Akses layanan
 
----
+| Service      | URL                                            |
+| ------------ | ---------------------------------------------- |
+| API Server   | [http://localhost:8000](http://localhost:8000) |
+| MinIO UI     | [http://localhost:9001](http://localhost:9001) |
+| MinIO Bucket | `bucket` (akses via API)                       |
 
-## 📌 TODO
+MinIO Login:
 
-* [ ] Memberikan komentar dengan godoc
-* [ ] Unit test untuk usecase
-* [ ] Integrasi object storage
-* [ ] Tambah gRPC
-* [ ] Deployment script
-* [ ] Containerization dengan Dockerfile
-
----
-
-## 👤 Author
-
-Built by [Yudha Sugiharto](https://github.com/ziruiproject) — feel free to fork or contribute ✨
+```txt
+Username: minioadmin
+Password: minioadmin
+```
 
 ---
 
-## 📄 License
+## ☁️ Upload File ke S3 via MinIO
 
-MIT License — bebas digunakan untuk project pribadi maupun komersial.
+* Gunakan endpoint upload API
+* File akan dikirim ke bucket S3 (`bucket`)
+* Response mengembalikan URL akses file
+* Menggunakan SDK: `https://github.com/aws/aws-sdk-go-v2`
+
+---
+
+## 🧪 Seed & Sample Data
+
+Seeder disimpan di:
+
+```
+internal/adapters/database/seeder/
+```
+
+Contoh file:
+
+* `202508020859_user_seeder.sql`
+* `202508051233_book_seeder.sql`
+
+Seeder akan dieksekusi otomatis saat kamu menjalankan:
+
+```bash
+make up-and-seed
+```
+
+---
+
+## 💡 Build Manual (Tanpa Docker)
+
+Kalau kamu prefer jalanin manual:
+
+```bash
+go mod tidy
+go build -o bin/app cmd/app/main.go
+./bin/app
+```
+
+Pastikan PostgreSQL & MinIO aktif yaa! 🔥
+
+---
+
+## 🔌 Impor API ke Postman / Insomnia
+
+Project ini menyertakan (`api-specs.yaml`) yang diekspor langsung dari Insomnia. Kamu bisa menggunakannya untuk testing dan eksplorasi endpoint secara cepat.
+### 🧪 Postman
+
+1. Buka Postman
+2. Klik `Import`
+3. Pilih `File` → pilih `api-specs.yaml`
+4. Done! Kamu bisa langsung eksplorasi endpointnya
+
+### 🛌 Insomnia
+
+1. Buka Insomnia
+2. Klik `Create → Import`
+3. Pilih `From File` → `api-specs.yaml`
+4. Mulai testing 😴
+
+>  `api-specs.yaml` berada di root direktori.
+
+---
+
+## 📌 TODO / Fitur Selanjutnya
+
+* [ ] 🔍 Integrasi Swagger UI endpoint
+* [ ] 🧪 Unit & Integration Tests
+* [ ] 🚦 CI/CD Pipeline
+
+---
+
+## 🧑‍💻 Kontribusi
+
+Kalau kamu tertarik pakai atau kontribusi:
+
+* Fork repo ini 🍴
+* Bikin fitur baru? PR welcome!
+* Jangan lupa kasih ⭐ di sini dan di  [starter-go](https://github.com/ziruiproject/starter-go)
+
+---
+
+## 📬 Kontak
+
+Buat diskusi, kolaborasi, atau sekadar ngopi ☕
+📧 DM via GitHub atau buka issue ya!
+
+---
+
+> Dibuat dengan ❤️ oleh [Yudha Sugiharto](https://github.com/ziruiproject)

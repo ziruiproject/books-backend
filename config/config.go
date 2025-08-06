@@ -14,6 +14,14 @@ type Config struct {
 	DBHost string `mapstructure:"POSTGRES_HOST"`
 	DBPass string `mapstructure:"POSTGRES_PASSWORD"`
 
+	StorageRootUser     string `mapstructure:"MINIO_ROOT_USER"`
+	StorageRootPassword string `mapstructure:"MINIO_ROOT_PASSWORD"`
+	StoragePortAPI      string `mapstructure:"MINIO_PORT_API"`
+	StoragePortUI       string `mapstructure:"MINIO_PORT_UI"`
+	StorageBucket       string `mapstructure:"MINIO_BUCKET"`
+	StorageHost         string `mapstructure:"MINIO_HOST"`
+	StorageRegion       string `mapstructure:"MINIO_REGION"`
+
 	AppURL  string `mapstructure:"APP_URL"`
 	AppPort string `mapstructure:"APP_PORT"`
 

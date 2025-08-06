@@ -1,5 +1,7 @@
 package user
 
+import "gorm.io/gorm"
+
 type CreateRequest struct {
 	Name     string `json:"name" validate:"required,max=100"`
 	Email    string `json:"email" validate:"required,email"`
@@ -7,7 +9,7 @@ type CreateRequest struct {
 }
 
 type UpdateRequest struct {
-	Id    int    `json:"id"`
+	Id    int    `json:"id" validate:"required"`
 	Name  string `json:"name" validate:"max=100"`
 	Email string `json:"email" validate:"omitempty,email"`
 }
@@ -27,6 +29,7 @@ func (dto *CreateRequest) ToEntity() *User {
 
 func (dto *UpdateRequest) ToEntity() *User {
 	return &User{
+		Model: gorm.Model{ID: uint(dto.Id)},
 		Name:  dto.Name,
 		Email: dto.Email,
 	}

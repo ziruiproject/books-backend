@@ -10,6 +10,7 @@ import (
 	idTranslation "github.com/go-playground/validator/v10/translations/id"
 	"github.com/rs/zerolog/log"
 	ivalidator "starter/internal/core/validator"
+	"time"
 )
 
 type Validator struct {
@@ -19,12 +20,15 @@ type Validator struct {
 }
 
 func (v *Validator) InitTranslation() {
-
 	v.message = make(map[string][]ivalidator.ValidationError)
 	v.message["en"] = []ivalidator.ValidationError{
 		{
 			Message: "cannot be empty",
 			Field:   "required",
+		},
+		{
+			Message: "must follow this format yyyy-mm-dd",
+			Field:   "publication_date",
 		},
 	}
 	v.message["id"] = []ivalidator.ValidationError{
@@ -115,9 +119,16 @@ func NewValidator() ivalidator.Validator {
 	english := en.New()
 	indonesian := id.New()
 	uni := ut.New(english, english, indonesian)
+	goValidator := validator.New(validator.WithRequiredStructEnabled())
+
+	goValidator.RegisterValidation("publication_date", func(fl validator.FieldLevel) bool {
+		dateStr := fl.Field().String()
+		_, err := time.Parse("2006-01-02", dateStr)
+		return err == nil
+	})
 
 	validation := &Validator{
-		Instance: validator.New(validator.WithRequiredStructEnabled()),
+		Instance: goValidator,
 		Uni:      uni,
 		message:  make(map[string][]ivalidator.ValidationError),
 	}

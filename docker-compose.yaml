@@ -2,7 +2,7 @@ services:
   postgres:
     env_file: .env
     image: postgres:alpine
-    container_name: postgres_omits
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -18,6 +18,36 @@ services:
       interval: 5s
       retries: 5
       timeout: 5s
-
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "${MINIO_PORT_API}:9000"     # S3 API
+      - "${MINIO_PORT_UI}:9001"     # Web UI
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":${MINIO_PORT_UI}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://${MINIO_HOST}:${MINIO_PORT_API}/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+  mc:
+    image: minio/mc:latest
+    container_name: minio-client
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+        sleep 5 && \
+        mc alias set local http://minio:${MINIO_PORT_API} minioadmin minioadmin && \
+        mc mb local/${MINIO_BUCKET} && \
+        mc policy set public local/${MINIO_BUCKET} && \
+        tail -f /dev/null
+      "
 volumes:
   postgres_data:
+  minio-data:

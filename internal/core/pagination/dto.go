@@ -15,11 +15,11 @@ type Page[T any] struct {
 type Request struct {
 	SortBy  string `json:"sort_by"`
 	OrderBy string `json:"order_by"`
-	Page    int    `json:"page"`
-	Limit   int    `json:"limit"`
+	Page    int    `json:"page" validation:"max=1000"`
+	Limit   int    `json:"limit" validation:"max=100"`
 }
 
-func NewPagination(request *Request) *Request {
+func NewPagination(request *Request) {
 	if request.Page < 1 {
 		request.Page = 1
 	}
@@ -31,13 +31,6 @@ func NewPagination(request *Request) *Request {
 	}
 	if request.SortBy == "" {
 		request.SortBy = "ASC"
-	}
-
-	return &Request{
-		SortBy:  request.SortBy,
-		OrderBy: request.OrderBy,
-		Page:    request.Page,
-		Limit:   request.Limit,
 	}
 }
 

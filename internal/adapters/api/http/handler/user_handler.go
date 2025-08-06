@@ -79,7 +79,7 @@ func (handler *UserHandler) Update(ctx *fiber.Ctx) error {
 		)
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(
+	return ctx.Status(fiber.StatusOK).JSON(
 		http.SuccessResponse(response, "User updated successfully"),
 	)
 }
@@ -95,7 +95,7 @@ func (handler *UserHandler) Delete(ctx *fiber.Ctx) error {
 		)
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(
+	return ctx.Status(fiber.StatusOK).JSON(
 		http.SuccessResponse("", "User deleted successfully"),
 	)
 }
@@ -121,7 +121,7 @@ func (handler *UserHandler) List(ctx *fiber.Ctx) error {
 		)
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(
+	return ctx.Status(fiber.StatusOK).JSON(
 		http.SuccessResponse(response, "Users fetched successfully"),
 	)
 }
@@ -137,7 +137,7 @@ func (handler *UserHandler) GetByID(ctx *fiber.Ctx) error {
 		)
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(
+	return ctx.Status(fiber.StatusOK).JSON(
 		http.SuccessResponse(response, "User fetched successfully"),
 	)
 }
@@ -153,7 +153,7 @@ func (handler *UserHandler) GetByEmail(ctx *fiber.Ctx) error {
 		)
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(
+	return ctx.Status(fiber.StatusOK).JSON(
 		http.SuccessResponse(response, "User fetched successfully"),
 	)
 }
